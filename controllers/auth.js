@@ -104,26 +104,30 @@ const login = async (req, res) => {
 
     try {
         // Check if user exists
-        const user = await User.findOne({ username });
-        if (!user) {
+        const userWithPassword = await User.findOne({ username });
+        if (!userWithPassword) {
             return res.status(404).json({ message: "User not found" });
         }
 
         // Check if user is verified
-        if (!user.verified) {
+        if (!userWithPassword.verified) {
             return res.status(403).json({ message: "Please verify your account to login" });
         }
 
         // Validate password
-        const isPasswordValid = await bcrypt.compare(password, user.password);
+        const isPasswordValid = await bcrypt.compare(password, userWithPassword.password);
         if (!isPasswordValid) {
             return res.status(401).json({ message: "Invalid credentials" });
         }
 
+        // Fetch user details without password and __v
+        const user = await User.findOne({ username }).select('-password -__v');
+
         // Generate authToken
         const authToken = jwt.sign({ user: { id: user._id, username: user.username } }, secretKey, { expiresIn: '24h' });
 
-        res.status(200).json({ authToken });
+        // Return authToken and user details (excluding password and __v fields)
+        res.status(200).json({ authToken, user });
     } catch (err) {
         console.error("Error logging in:", err);
         res.status(500).json({ message: "Error logging in", error: err.message });

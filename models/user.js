@@ -1,5 +1,3 @@
-// models/user.js
-
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
@@ -8,7 +6,7 @@ const userSchema = new Schema({
     password: { type: String, required: true },
     firstName: { type: String, required: true },
     lastName: { type: String, required: true },
-    phoneNumber: { type: Number, required: true },
+    phoneNumber: { type: String, required: true }, // Changed to String
     verified: { type: Boolean, default: false },
     verificationToken: { type: String },
 });

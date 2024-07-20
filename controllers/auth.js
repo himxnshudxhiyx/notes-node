@@ -44,9 +44,8 @@ const signup = async (req, res) => {
         // Generate verification token
         const verificationToken = crypto.randomBytes(32).toString('hex');
 
-        var newPhone = `+${phoneNumber}`;
         // Create new user
-        const newUser = new User({ username, password: hashedPassword, verificationToken, firstName, lastName, newPhone });
+        const newUser = new User({ username, password: hashedPassword, verificationToken, firstName, lastName, phoneNumber });
 
         await newUser.validate();
         // Send verification email

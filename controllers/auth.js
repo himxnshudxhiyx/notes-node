@@ -156,7 +156,7 @@ const logout = async (req, res) => {
         user.isLoggedIn = false;
         await user.save();
 
-        res.status(200).json({ message: 'Logout successful', status: 200 });
+        res.status(200).json({ message: 'Logout Successful', status: 200 });
     } catch (err) {
         console.error('Error logging out:', err);
         res.status(500).json({ message: 'Error logging out', error: err.message, status: 500 });

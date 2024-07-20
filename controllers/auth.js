@@ -45,7 +45,9 @@ const signup = async (req, res) => {
         const verificationToken = crypto.randomBytes(32).toString('hex');
 
         // Create new user
-        const newUser = new User({ username, password: hashedPassword, verificationToken, firstName, lastName, phoneNumber });
+        const newUser = new User({
+            username, password: hashedPassword, verificationToken, firstName, lastName, phoneNumber, isLoggedIn: false
+        });
 
         await newUser.validate();
         // Send verification email
@@ -123,6 +125,12 @@ const login = async (req, res) => {
         // Fetch user details without password and __v
         const user = await User.findOne({ username }).select('-password -__v');
 
+        if (user.isLoggedIn) {
+            return res.status(400).json({ message: "User already logged in on another device", status: 400 });
+        }
+
+        await User.updateOne({ username }, { $set: { isLoggedIn: true } });
+
         // Generate authToken
         const authToken = jwt.sign({ user: { id: user._id, username: user.username } }, secretKey, { expiresIn: '24h' });
 
@@ -135,12 +143,18 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-    const token = req.token;
+    const userId = req.user.id; // Assuming `req.user` contains user information from the authentication middleware
 
     try {
-        // Add the token to the blacklist
-        const blacklistedToken = new Blacklist({ token });
-        await blacklistedToken.save();
+        // Find the user and set isLoggedIn to false
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found", status: 404 });
+        }
+
+        // Set user as logged out
+        user.isLoggedIn = false;
+        await user.save();
 
         res.status(200).json({ message: 'Logout successful', status: 200 });
     } catch (err) {
@@ -148,5 +162,6 @@ const logout = async (req, res) => {
         res.status(500).json({ message: 'Error logging out', error: err.message, status: 500 });
     }
 };
+
 
 module.exports = { signup, login, checkUser, verifyEmail, logout };

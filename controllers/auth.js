@@ -6,6 +6,7 @@ const { secretKey } = require('../config'); // Replace with your secret key from
 const User = require('../models/user');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer'); // Make sure to install nodemailer
+require("dotenv").config();
 
 
 
@@ -54,8 +55,8 @@ const signup = async (req, res) => {
         const transporter = nodemailer.createTransport({
             service: 'Gmail',
             auth: {
-                user: 'himanshud.dahiya@gmail.com',
-                pass: 'vuku rros lpdy qyuj',
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
             },
         });
 

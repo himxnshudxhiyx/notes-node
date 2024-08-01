@@ -8,8 +8,6 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer'); // Make sure to install nodemailer
 require("dotenv").config();
 
-
-
 const checkUser = async (req, res) => {
     try {
         // Retrieve user information from the request object (populated by authMiddleware)

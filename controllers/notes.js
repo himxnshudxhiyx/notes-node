@@ -34,6 +34,14 @@ const addNote = async (req, res) => {
     const userId = req.user.id; // Extract user ID from authenticated request
 
     try {
+        // Check if a note with the same title already exists for the user
+        const existingNote = await Notes.findOne({ userId, title });
+
+        if (existingNote) {
+            return res.status(400).json({ message: "Title already exists" });
+        }
+
+        // Create and save the new note if the title does not exist
         const newNote = new Notes({ userId, title, description });
         await newNote.save();
 

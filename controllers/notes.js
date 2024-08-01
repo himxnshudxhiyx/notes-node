@@ -38,17 +38,17 @@ const addNote = async (req, res) => {
         const existingNote = await Notes.findOne({ userId, title });
 
         if (existingNote) {
-            return res.status(400).json({ message: "Title already exists", statusCode: 400 });
+            return res.status(400).json({ message: "Title already exists", status: 400 });
         }
 
         // Create and save the new note if the title does not exist
         const newNote = new Notes({ userId, title, description });
         await newNote.save();
 
-        res.status(201).json({ message: "Note added successfully" , statusCode: 201});
+        res.status(201).json({ message: "Note added successfully" , status: 201});
     } catch (err) {
         console.error("Error adding note:", err);
-        res.status(500).json({ message: "Error adding note", error: err.message, statusCode: 500 });
+        res.status(500).json({ message: "Error adding note", error: err.message, status: 500 });
     }
 };
 

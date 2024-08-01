@@ -45,7 +45,7 @@ const addNote = async (req, res) => {
         const newNote = new Notes({ userId, title, description });
         await newNote.save();
 
-        res.status(201).json({ data: newNote, message: "Note added successfully" , statusCode: 201});
+        res.status(201).json({ message: "Note added successfully" , statusCode: 201});
     } catch (err) {
         console.error("Error adding note:", err);
         res.status(500).json({ message: "Error adding note", error: err.message, statusCode: 500 });

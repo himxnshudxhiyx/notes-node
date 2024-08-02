@@ -52,4 +52,23 @@ const addNote = async (req, res) => {
     }
 };
 
-module.exports = { getAllNotes, updateNote, addNote};
+const deleteNote = async (req, res) => {
+    const { id } = req.body; // Extract note ID from the request body
+    const userId = req.user.id; // Extract user ID from the authenticated request
+
+    try {
+        // Find and delete the note that matches the userId and note ID
+        const result = await Notes.deleteOne({ _id: id, userId });
+
+        if (result.deletedCount === 0) {
+            return res.status(404).json({ message: "Note not found or you don't have permission to delete it", status: 404 });
+        }
+
+        res.status(200).json({ message: "Note deleted successfully", status: 200 });
+    } catch (err) {
+        console.error("Error deleting note:", err);
+        res.status(500).json({ message: "Error deleting note", error: err.message, status: 500 });
+    }
+};
+
+module.exports = { getAllNotes, updateNote, addNote, deleteNote};

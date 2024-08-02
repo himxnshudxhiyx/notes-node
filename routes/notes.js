@@ -8,7 +8,7 @@ const authMiddleware = require('../middleware/authMiddleware');
 const router = express.Router();
 
 // Import the controller functions for handling notes operations
-const { getAllNotes, updateNote, addNote } = require("../controllers/notes");
+const { getAllNotes, updateNote, addNote , deleteNote} = require("../controllers/notes");
 
 // Define a route for GET requests to the root URL of this router, using the authentication middleware
 // and calling the getAllNotes controller function to fetch all notes

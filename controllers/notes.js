@@ -30,7 +30,7 @@ const updateNote = async (req, res) => {
 };
 
 const addNote = async (req, res) => {
-    const { title, description } = req.body;
+    const { title, description, noteStatus } = req.body;
     const userId = req.user.id; // Extract user ID from authenticated request
 
     try {
@@ -42,7 +42,7 @@ const addNote = async (req, res) => {
         }
 
         // Create and save the new note if the title does not exist
-        const newNote = new Notes({ userId, title, description });
+        const newNote = new Notes({ userId, title, description, noteStatus});
         await newNote.save();
 
         res.status(201).json({ message: "Note added successfully" , status: 201});

@@ -17,13 +17,13 @@ const checkUser = async (req, res) => {
         const user = await User.findById(userId).select('-password -__v -verified'); // Exclude the password field
 
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: "User not found", status:404 });
         }
 
-        res.status(200).json(user);
+        res.status(200).json({user, status: 200});
     } catch (err) {
         console.error("Error checking user details:", err);
-        res.status(500).json({ message: "Error checking user details", error: err.message });
+        res.status(500).json({ message: "Error checking user details", error: err.message ,  status: 500});
     }
 };
 

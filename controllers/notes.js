@@ -52,6 +52,26 @@ const addNote = async (req, res) => {
     }
 };
 
+
+
+
+const markAsDone = async (req, res) => {
+    const { id, noteStatus } = req.body;
+
+    try {
+        const updatedNote = await Notes.findByIdAndUpdate(id, { noteStatus }, { new: true });
+
+        if (!updatedNote) {
+            return res.status(404).json({ message: "Note not found" , status: 404});
+        }
+
+        res.status(200).json({ data: updatedNote, message: "Note updated successfully" , status: 200});
+    } catch (err) {
+        console.error("Error updating note:", err);
+        res.status(500).json({ message: "Error updating note", error: err.message , status: 500});
+    }
+};
+
 const deleteNote = async (req, res) => {
     const { id } = req.body; // Extract note ID from the request body
     const userId = req.user.id; // Extract user ID from the authenticated request
@@ -71,4 +91,4 @@ const deleteNote = async (req, res) => {
     }
 };
 
-module.exports = { getAllNotes, updateNote, addNote, deleteNote};
+module.exports = { getAllNotes, updateNote, addNote, markAsDone, deleteNote};

@@ -1,5 +1,6 @@
 const Notes = require("../models/notes");
 const db = require('../db/connect'); // Path to your Firebase initialization file
+const admin = require('firebase-admin');
 
 const getAllNotes = async (req, res) => {
     const userId = req.user.id; // Extract user ID from authenticated request

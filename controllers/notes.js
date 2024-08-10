@@ -69,7 +69,7 @@ const addNote = async (req, res) => {
 
         // Create and save the new note if the title does not exist
         const newNoteRef = notesRef.doc(); // Create a new document reference
-        const createdAt = new Date(); // Get the current timestamp
+        const createdAt = new Date().toISOString(); // Get the current timestamp in ISO 8601 format
 
         await newNoteRef.set({ userId, title, description, noteStatus, createdAt});
 

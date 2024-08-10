@@ -9,7 +9,7 @@ const product_routes = require("./routes/product");
 const notes_routes = require("./routes/notes");
 const auth_routes = require("./routes/auth");
 
-const connectDB= require("./db/connect");
+// const connectDB= require("./db/connect");
 
 app.get("/", (req, res) => {
     res.send("Hi, I'm live");
@@ -25,7 +25,7 @@ app.use("/api/auth", auth_routes)
 
 const start = async () => {
     try {
-        await connectDB(process.env.MONGO_URL);
+        // await connectDB(process.env.MONGO_URL);
         app.listen(PORT, () => {
             console.log(PORT + " Yes I am connected");
         });

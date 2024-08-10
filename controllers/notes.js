@@ -69,7 +69,9 @@ const addNote = async (req, res) => {
 
         // Create and save the new note if the title does not exist
         const newNoteRef = notesRef.doc(); // Create a new document reference
-        await newNoteRef.set({ userId, title, description, noteStatus });
+        const createdAt = new Date(); // Get the current timestamp
+
+        await newNoteRef.set({ userId, title, description, noteStatus, createdAt});
 
         res.status(201).json({ message: "Note added successfully", status: 201 });
     } catch (err) {
@@ -93,6 +95,33 @@ const markAsDone = async (req, res) => {
         if (!updatedDoc.exists) {
             return res.status(404).json({ message: "Note not found", status: 404 });
         }
+
+        // Get the user ID from the note document
+        const userId = updatedDoc.data().userId;
+
+        // Retrieve the user's FCM token from Firestore
+        const userRef = db.collection('users').doc(userId);
+        const userDoc = await userRef.get();
+        if (!userDoc.exists) {
+            return res.status(404).json({ message: "User not found", status: 404 });
+        }
+        const fcmToken = userDoc.data().fcmToken;
+
+        if (!fcmToken) {
+            return res.status(404).json({ message: "FCM token not found for the user", status: 404 });
+        }
+
+        // Prepare the notification message
+        const message = {
+            notification: {
+                title: 'Note Status Updated',
+                body: `Your note "${updatedDoc.data().title}" status has been updated to ${noteStatus}.`,
+            },
+            token: fcmToken,
+        };
+
+        // Send the notification
+        await admin.messaging().send(message);
 
         // Return the updated note
         res.status(200).json({ data: { id: updatedDoc.id, ...updatedDoc.data() }, message: "Note updated successfully", status: 200 });

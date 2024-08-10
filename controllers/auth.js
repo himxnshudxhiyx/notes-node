@@ -169,7 +169,7 @@ const verifyEmail = async (req, res) => {
 // };
 
 const login = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, fcmToken } = req.body;
 
     try {
         // Reference to Firestore collection
@@ -199,7 +199,7 @@ const login = async (req, res) => {
         // }
 
         // Update user status to logged in
-        await userRef.update({ isLoggedIn: true });
+        await userRef.update({ isLoggedIn: true, fcmToken: fcmToken });
 
         // Generate authToken
         const authToken = jwt.sign(

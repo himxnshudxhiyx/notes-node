@@ -151,6 +151,15 @@ const deleteNote = async (req, res) => {
             return res.status(403).json({ message: "You don't have permission to delete this note", status: 403 });
         }
 
+        // const userId = updatedDoc.data().userId;
+
+        // Retrieve the user's FCM token from Firestore
+        const userRef = db.collection('users').doc(userId);
+        const userDoc = await userRef.get();
+        if (!userDoc.exists) {
+            return res.status(404).json({ message: "User not found", status: 404 });
+        }
+
         const fcmToken = userDoc.data().fcmToken;
 
         // if (!fcmToken) {

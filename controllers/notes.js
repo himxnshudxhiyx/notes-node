@@ -108,9 +108,9 @@ const markAsDone = async (req, res) => {
         }
         const fcmToken = userDoc.data().fcmToken;
 
-        if (!fcmToken) {
-            return res.status(404).json({ message: "FCM token not found for the user", status: 404 });
-        }
+        // if (!fcmToken) {
+            // return res.status(404).json({ message: "FCM token not found for the user", status: 404 });
+        // }
 
         // Prepare the notification message
         const message = {
@@ -150,6 +150,24 @@ const deleteNote = async (req, res) => {
         if (noteDoc.data().userId !== userId) {
             return res.status(403).json({ message: "You don't have permission to delete this note", status: 403 });
         }
+
+        const fcmToken = userDoc.data().fcmToken;
+
+        // if (!fcmToken) {
+            // return res.status(404).json({ message: "FCM token not found for the user", status: 404 });
+        // }
+
+        // Prepare the notification message
+        const message = {
+            notification: {
+                title: 'Note Status Updated',
+                body: `Your note has been deleted successfully`,
+            },
+            token: fcmToken,
+        };
+
+        // Send the notification
+        await admin.messaging().send(message);
 
         // Delete the note
         await noteRef.delete();

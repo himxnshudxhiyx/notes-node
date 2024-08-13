@@ -33,6 +33,47 @@ const createChatRoom = async (req, res) => {
     }
 };
 
+
+const sendNotification = async (req, res) => {
+    try {
+        const { userEmail, message } = req.body;
+    
+        if (!userEmail || !message) {
+          return res.status(400).json({ error: 'User email and message are required' , status: 400});
+        }
+    
+        // Fetch device token associated with the userEmail
+        const userSnapshot = await db.collection('users').doc(userEmail).get();
+    
+        if (!userSnapshot.exists) {
+          return res.status(404).json({ error: 'User not found' , status: 404});
+        }
+    
+        const userData = userSnapshot.data();
+        const deviceToken = userData.deviceToken; // Assuming you have a deviceToken field
+    
+        if (!deviceToken) {
+          return res.status(404).json({ error: 'Device token not found for this user' , status: 404});
+        }
+    
+        // Send notification
+        const messagePayload = {
+          token: deviceToken,
+          notification: {
+            title: 'New Message',
+            body: message,
+          },
+        };
+    
+        await admin.messaging().send(messagePayload);
+    
+        res.status(200).json({ success: 'Notification sent successfully' , status: 200});
+      } catch (error) {
+        console.error('Error sending notification:', error);
+        res.status(500).json({ error: 'Failed to send notification' , status: 500});
+      }
+}
+
 const chatRoomExists = async (req, res) => {
 
     const { chatRoomId } = req.body;
@@ -57,4 +98,4 @@ const chatRoomExists = async (req, res) => {
 }
 
 
-module.exports = { createChatRoom, chatRoomExists };
+module.exports = { createChatRoom, chatRoomExists, sendNotification };

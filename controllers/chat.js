@@ -50,7 +50,7 @@ const sendNotification = async (req, res) => {
         }
     
         const userData = userSnapshot.data();
-        const deviceToken = userData.deviceToken; // Assuming you have a deviceToken field
+        const deviceToken = userData.fcmToken; // Assuming you have a deviceToken field
     
         if (!deviceToken) {
           return res.status(404).json({ error: 'Device token not found for this user' , status: 404});

@@ -35,7 +35,7 @@ const createChatRoom = async (req, res) => {
 
 const chatRoomExists = async (req, res) => {
 
-    const { chatRoomId } = req.body;
+    const { chatRoomId } = req.params;
 
     if (!chatRoomId) {
       return res.status(400).json({ error: 'Chat room ID is required' , status: 400});

@@ -7,6 +7,6 @@ const authMiddleware = require('../middleware/authMiddleware');
 
 router.route('/sendMessage').post(authMiddleware,  sendMessage);   
 // router.route('/getMessages').get(authMiddleware, getMessages);
-router.route('/createChatRoom').get(authMiddleware, createChatRoom);
+router.route('/createChatRoom').post(authMiddleware, createChatRoom);
 
 module.exports = router;

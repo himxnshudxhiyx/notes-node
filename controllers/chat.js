@@ -70,7 +70,7 @@ const sendNotification = async (req, res) => {
         res.status(200).json({ success: 'Notification sent successfully' , status: 200});
       } catch (error) {
         console.error('Error sending notification:', error);
-        res.status(500).json({ error: 'Failed to send notification' , status: 500});
+        res.status(500).json({ message: 'Failed to send notification', error:error , status: 500});
       }
 }
 

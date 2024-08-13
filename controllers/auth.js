@@ -37,6 +37,8 @@ const checkUser = async (req, res) => {
 };
 
 const getAllUsersWithDetails = async (req, res) => {
+    const loggedInUserId = req.user.id; // Retrieve the ID of the logged-in user from middleware
+
     try {
         // Reference to the Firestore collection for users
         const usersRef = db.collection('users');
@@ -52,6 +54,11 @@ const getAllUsersWithDetails = async (req, res) => {
         for (const doc of snapshot.docs) {
             const userId = doc.id;
             const userData = doc.data();
+
+            // Skip the current logged-in user
+            if (userId === loggedInUserId) {
+                continue;
+            }
 
             // Exclude sensitive fields
             const { fcmToken, password, ...filteredUserData } = userData;

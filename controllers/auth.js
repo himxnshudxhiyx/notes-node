@@ -36,6 +36,42 @@ const checkUser = async (req, res) => {
     }
 };
 
+const getAllUsersWithDetails = async (req, res) => {
+    try {
+        // Reference to the Firestore collection for users
+        const usersRef = db.collection('users');
+        const snapshot = await usersRef.get();
+
+        if (snapshot.empty) {
+            return res.status(404).json({ message: "No users found", status: 404 });
+        }
+
+        // Initialize an array to store users with their details
+        const usersWithDetails = [];
+
+        for (const doc of snapshot.docs) {
+            const userId = doc.id;
+            const userData = doc.data();
+
+            // Exclude sensitive fields
+            const { fcmToken, password, ...filteredUserData } = userData;
+
+            // Add filtered user data to the result
+            usersWithDetails.push({
+                id: userId,
+                ...filteredUserData
+            });
+        }
+
+        const count = usersWithDetails.length;
+
+        res.status(200).json({ data: usersWithDetails, count, message: "Users and their details found successfully", status: 200 });
+    } catch (err) {
+        console.error("Error fetching users and details:", err);
+        res.status(500).json({ message: "Error fetching users and details", error: err.message, status: 500 });
+    }
+};
+
 
 const signup = async (req, res) => {
     const { username, password, firstName, lastName, phoneNumber } = req.body;
@@ -240,4 +276,4 @@ const logout = async (req, res) => {
 };
 
 
-module.exports = { signup, login, checkUser, verifyEmail, logout };
+module.exports = { signup, login, checkUser, verifyEmail, logout, getAllUsersWithDetails };

@@ -8,7 +8,7 @@ const createChatRoom = async (req, res) => {
 
     try {
         // Create a unique chat room ID based on emails
-        const chatRoomId = [loggedInUserPhone, chatWithUserPhone].sort().join('_');
+        const chatRoomId = [loggedInUserPhone, chatWithUserPhone].join('_');
 
         // Create chat room document
         const chatRoomRef = db.collection('chatRooms').doc(chatRoomId);

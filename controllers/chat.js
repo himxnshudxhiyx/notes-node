@@ -36,7 +36,7 @@ const createChatRoom = async (req, res) => {
 
 const sendNotification = async (req, res) => {
     try {
-        const { userEmail, message } = req.body;
+        const { userEmail, message, from } = req.body;
     
         if (!userEmail || !message) {
           return res.status(400).json({ error: 'User email and message are required' , status: 400});
@@ -60,7 +60,7 @@ const sendNotification = async (req, res) => {
         const messagePayload = {
           token: deviceToken,
           notification: {
-            title: 'New Message',
+            title: 'New Message from ' + from,
             body: message,
           },
         };

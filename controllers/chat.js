@@ -13,7 +13,7 @@ const createChatRoom = async (req, res) => {
         // Create chat room document
         const chatRoomRef = db.collection('chatRooms').doc(chatRoomId);
         await chatRoomRef.set({
-            createdAt: admin.firestore.FieldValue.serverTimestamp()
+            createdAt: new Date().toISOString()
         });
 
         // Update both users' documents with the new chat room ID

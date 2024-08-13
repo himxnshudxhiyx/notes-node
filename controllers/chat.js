@@ -1,10 +1,7 @@
 // controllers/chat.js
 
-// const WebSocket = require('ws');
-// const server = new WebSocket.Server({ port: 8080 });
-
 const admin = require('firebase-admin');
-const db = require('../db/connect'); // Path to your Firebase initialization file
+const db = require('../db/connect'); 
 
 const createChatRoom = async (req, res) => {
     const { loggedInUserEmail, chatWithUserEmail, loggedInUserPhone, chatWithUserPhone } = req.body;
@@ -36,56 +33,28 @@ const createChatRoom = async (req, res) => {
     }
 };
 
-const sendMessage = async (req, res) => {
+const chatRoomExists = async (req, res) => {
 
-    const { chatRoomId, senderId, message } = req.body;
+    const { chatRoomId } = req.body;
 
+    if (!chatRoomId) {
+      return res.status(400).json({ error: 'Chat room ID is required' , status: 400});
+    }
+  
     try {
-        const messageRef = db.collection('chatRooms').doc(chatRoomId).collection('messages').doc();
-        await messageRef.set({
-            senderId,
-            message,
-            timestamp: admin.firestore.FieldValue.serverTimestamp()
-        });
-
-        res.status(201).send('Message sent');
+      const chatRoomRef = db.collection('chatRooms').doc(chatRoomId);
+      const doc = await chatRoomRef.get();
+  
+      if (doc.exists) {
+        res.status(200).json({ exists: true , status: 200});
+      } else {
+        res.status(200).json({ exists: false , status: 200});
+      }
     } catch (error) {
-        res.status(500).send(error.message);
+      console.error('Error checking chat room existence:', error);
+      res.status(500).json({ error: 'Internal Server Error' , status: 500});
     }
 }
 
 
-module.exports = { createChatRoom, sendMessage };
-
-// Store client connections by chat room
-// const chatRoomClients = {};
-
-// server.on('connection', (ws, req) => {
-//     console.log('New client connected');
-
-//     // Extract chat room ID from query params
-//     const chatRoomId = new URL(req.url, `http://${req.headers.host}`).searchParams.get('chatRoomId');
-
-//     if (!chatRoomClients[chatRoomId]) {
-//         chatRoomClients[chatRoomId] = [];
-//     }
-//     chatRoomClients[chatRoomId].push(ws);
-
-//     // Listen for changes in Firestore for the specific chat room
-//     db.collection('chatRooms').doc(chatRoomId).collection('messages')
-//         .onSnapshot((snapshot) => {
-//             snapshot.docChanges().forEach((change) => {
-//                 if (change.type === 'added') {
-//                     chatRoomClients[chatRoomId].forEach(client => {
-//                         client.send(JSON.stringify(change.doc.data()));
-//                     });
-//                 }
-//             });
-//         });
-
-//     ws.on('close', () => {
-//         console.log('Client disconnected');
-//         // Remove the client from the list
-//         chatRoomClients[chatRoomId] = chatRoomClients[chatRoomId].filter(client => client !== ws);
-//     });
-// });
+module.exports = { createChatRoom, chatRoomExists };

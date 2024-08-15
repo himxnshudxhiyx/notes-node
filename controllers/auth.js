@@ -91,7 +91,7 @@ const signup = async (req, res) => {
             return res.status(400).json({ message: "Username already exists", status: 400 });
         }
 
-        const phoneNumberStr = String(phoneNumber);
+        const phoneNumber = String(phoneNumber);
 
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -106,7 +106,7 @@ const signup = async (req, res) => {
             verificationToken,
             firstName,
             lastName,
-            phoneNumberStr,
+            phoneNumber,
             isLoggedIn: false
         };
 

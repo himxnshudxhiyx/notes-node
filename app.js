@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require('express');
 const app = express();
+const path = require('path');
 
 const PORT = process.env.PORT || 3000;
 
@@ -17,6 +18,7 @@ app.get("/", (req, res) => {
 });
 
 app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files
 
 // middleware or to set router
 

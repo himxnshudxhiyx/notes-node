@@ -161,7 +161,7 @@ const verifyEmail = async (req, res) => {
             verified: true,
             verificationToken: admin.firestore.FieldValue.delete() // Correctly delete the verification token field
         });
-        res.redirect('/verification-success.html');
+        res.redirect('/public/verification-success.html');
         // res.status(200).json({ message: "Email verified successfully" });
     } catch (err) {
         console.error("Error verifying email:", err);

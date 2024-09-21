@@ -250,7 +250,7 @@ const login = async (req, res) => {
         const authToken = jwt.sign(
             { user: { id: username, username: userWithPassword.username } },
             secretKey,
-            { expiresIn: '24h' }
+            { expiresIn: '30d' }
         );
 
         // Return authToken and user details (excluding password)
